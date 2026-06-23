@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finance Tracker</title>
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <div id="app">
+      <section id="login-screen" class="screen active">
+        <div class="box narrow">
+          <h1 data-i18n="appTitle">Finance Tracker</h1>
+          <p class="muted" data-i18n="loginHint">Вход</p>
+          <form id="login-form">
+            <label>
+              <span data-i18n="login">Логин</span>
+              <input type="text" name="username" required minlength="3" />
+            </label>
+            <label>
+              <span data-i18n="password">Пароль</span>
+              <input type="password" name="password" required minlength="6" />
+            </label>
+            <p id="login-error" class="err" hidden></p>
+            <button type="submit" class="btn ok" data-i18n="signIn">Войти</button>
+          </form>
+          <p class="foot">
+            <span data-i18n="noAccount">Нет аккаунта?</span>
+            <button type="button" id="go-register" data-i18n="register">Регистрация</button>
+          </p>
+        </div>
+      </section>
+
+      <section id="register-screen" class="screen">
+        <div class="box narrow">
+          <h1 data-i18n="registerHint">Регистрация</h1>
+          <form id="register-form">
+            <label>
+              <span data-i18n="login">Логин</span>
+              <input type="text" name="username" required minlength="3" />
+            </label>
+            <label>
+              <span data-i18n="password">Пароль</span>
+              <input type="password" name="password" required minlength="6" />
+            </label>
+            <label>
+              <span data-i18n="passwordAgain">Повтор пароля</span>
+              <input type="password" name="passwordConfirm" required minlength="6" />
+            </label>
+            <p id="register-error" class="err" hidden></p>
+            <button type="submit" class="btn ok" data-i18n="signUp">Создать</button>
+          </form>
+          <p class="foot">
+            <span data-i18n="hasAccount">Уже есть?</span>
+            <button type="button" id="go-login" data-i18n="signIn">Войти</button>
+          </p>
+        </div>
+      </section>
+
+      <section id="dashboard-screen" class="screen page">
+        <header class="bar">
+          <p class="user-line">
+            <span data-i18n="hello">Привет</span>, <b id="dashboard-username"></b>
+          </p>
+          <div class="bar-right">
+            <button type="button" id="open-settings" class="btn tiny" data-i18n="settings">Настройки</button>
+            <button type="button" id="logout-btn" class="btn tiny" data-i18n="logout">Выйти</button>
+          </div>
+        </header>
+
+        <div class="hero">
+          <p class="muted" data-i18n="thisMonth">за этот месяц</p>
+          <div id="hero-balance" class="hero-num">0 ₴</div>
+        </div>
+
+        <div class="month-stats">
+          <div class="month-item">
+            <span class="month-label" data-i18n="balance">Баланс</span>
+            <b id="month-balance">0 ₴</b>
+            <small data-i18n="thisMonth">за этот месяц</small>
+          </div>
+          <div class="month-item">
+            <span class="month-label" data-i18n="income">Доходы</span>
+            <b id="month-income" class="plus">0 ₴</b>
+            <small data-i18n="thisMonth">за этот месяц</small>
+          </div>
+          <div class="month-item">
+            <span class="month-label" data-i18n="expense">Расходы</span>
+            <b id="month-expense" class="minus">0 ₴</b>
+            <small data-i18n="thisMonth">за этот месяц</small>
+          </div>
+        </div>
+
+        <button type="button" id="open-new-tx" class="btn ok wide-btn" data-i18n="addTx">Новая транзакция</button>
+
+        <div class="box">
+          <h2 data-i18n="history">История</h2>
+          <div class="filters">
+            <select id="filter-type">
+              <option value="all" data-i18n="all">Все</option>
+              <option value="income" data-i18n="incomeType">Доход</option>
+              <option value="expense" data-i18n="expenseType">Расход</option>
+            </select>
+            <select id="filter-category">
+              <option value="all" data-i18n="all">Все</option>
+            </select>
+            <select id="filter-sort">
+              <option value="desc" data-i18n="sortNew">Сначала новые</option>
+              <option value="asc" data-i18n="sortOld">Сначала старые</option>
+            </select>
+          </div>
+          <ul id="transaction-list"></ul>
+          <p id="empty-list" class="muted" data-i18n="emptyList">Ничего нет</p>
+        </div>
+      </section>
+
+      <section id="new-tx-screen" class="screen page">
+        <header class="page-head">
+          <button type="button" id="back-dashboard" class="btn back" data-i18n="back">Назад</button>
+          <h2 data-i18n="newTx">Новая транзакция</h2>
+        </header>
+        <div class="box">
+          <form id="new-tx-form" class="tx-form">
+            <label>
+              <span data-i18n="type">Тип</span>
+              <select name="type">
+                <option value="expense" data-i18n="expenseType">Расход</option>
+                <option value="income" data-i18n="incomeType">Доход</option>
+              </select>
+            </label>
+            <label>
+              <span data-i18n="amount">Сумма</span>
+              <input type="number" name="amount" min="0.01" step="0.01" required />
+            </label>
+            <label>
+              <span data-i18n="category">Категория</span>
+              <select name="category" id="new-tx-category"></select>
+            </label>
+            <div id="new-create-wrap" class="create-block" hidden>
+              <label>
+                <span data-i18n="otherName">Название категории</span>
+                <input type="text" name="newCatName" />
+              </label>
+              <button type="button" id="new-create-cat" class="btn ok tiny" data-i18n="createCat">Создать</button>
+            </div>
+            <label>
+              <span data-i18n="date">Дата</span>
+              <input type="text" name="date" data-i18n="datePh" placeholder="дд.мм.гггг" required />
+            </label>
+            <label>
+              <span data-i18n="comment">Комментарий</span>
+              <input type="text" name="comment" data-i18n="commentPh" placeholder="необязательно" />
+            </label>
+            <button type="submit" class="btn ok" data-i18n="save">Сохранить</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <div id="settings-modal" class="modal" hidden>
+      <div class="box modal-inner">
+        <h2 data-i18n="settings">Настройки</h2>
+        <label>
+          <span data-i18n="theme">Тема</span>
+          <select id="setting-theme">
+            <option value="dark" data-i18n="themeDark">Тёмная</option>
+            <option value="light" data-i18n="themeLight">Светлая</option>
+          </select>
+        </label>
+        <label>
+          <span data-i18n="language">Язык</span>
+          <select id="setting-lang">
+            <option value="ru">Русский</option>
+            <option value="uk">Українська</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+        <div class="settings-cats">
+          <h3 data-i18n="myCategories">Мои категории</h3>
+          <div id="custom-cats-list"></div>
+        </div>
+        <button type="button" id="close-settings" class="btn ok" data-i18n="close">Закрыть</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/js/app.js"></script>
+  </body>
+</html>
